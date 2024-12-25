@@ -1,7 +1,7 @@
 <script setup>
 
 // 定义props
-defineProps({
+const props = defineProps({
   // 主标题
   title: {
     type: String
@@ -11,6 +11,9 @@ defineProps({
     type: String
   }
 })
+
+
+
 
 </script>
 
