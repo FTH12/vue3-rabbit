@@ -20,7 +20,7 @@ const { y } = useScroll(window)
           <RouterLink to="/">{{item.name}}</RouterLink>
         </li>
       </ul>
-      <LayoutHeaderUl />
+      <!-- <LayoutHeaderUl /> -->
       <div class="right">
         <RouterLink to="/">品牌</RouterLink>
         <RouterLink to="/">专题</RouterLink>
