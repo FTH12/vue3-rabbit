@@ -3,11 +3,9 @@
 </script>
 
 <template>
-  <RouterView />
-  <div class="test">
-    test scss
+    <!-- 一级路由出口组件 -->
+    <RouterView />
 
-  </div>
 </template>
 
 <style scoped lang="scss">
