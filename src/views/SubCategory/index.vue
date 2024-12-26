@@ -4,6 +4,9 @@ import { useRoute } from 'vue-router'
 import {ref, onMounted} from 'vue'
 import GoodsItem from '../Home/components/GoodsItem.vue'
 
+
+const disabled = ref(false)
+
 // 获取面包屑导航数据
 const route = useRoute()
 const categoryData = ref({})
@@ -31,7 +34,22 @@ onMounted(()=> getGoodsList())
 
 const handleClick = () => {
   reqData.value.page = 1
+  disabled.value = false
   getGoodsList()
+}
+
+
+// 加载更多数据
+const load = async () => {
+  // 获取下一页数据
+  reqData.value.page++
+  const res = await getSubCategoryAPI(reqData.value)
+  if(res.result.items.length===0){
+    disabled.value=true
+  }
+  goodsList.value = [...goodsList.value, ...res.result.items]
+
+
 }
 </script>
 
@@ -52,7 +70,11 @@ const handleClick = () => {
         <el-tab-pane label="最高人气" name="orderNum"></el-tab-pane>
         <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
       </el-tabs>
-      <div class="body">
+      <div class="body"
+        v-infinite-scroll="load"
+        :infinite-scroll-delay="400"
+        :infinite-scroll-disabled="disabled"
+        :infinite-scroll-distance="10">
          <!-- 商品列表-->
           <GoodsItem v-for="good in goodsList" :good="good" :key="good.id"></GoodsItem>
       </div>
