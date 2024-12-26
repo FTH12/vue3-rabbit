@@ -8,3 +8,10 @@ export const getCategoryAPI = (id) => {
   })
 }
 
+export const getCategoryFilterAPI = (id) => {
+  return request.get('/category/sub/filter',{
+    params: {
+      id
+    }
+  })
+}
