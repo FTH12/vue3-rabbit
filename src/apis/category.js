@@ -15,3 +15,17 @@ export const getCategoryFilterAPI = (id) => {
     }
   })
 }
+
+/**
+ *
+ * @param {*} data {
+ *     categoryId: 100500,
+ *     page:1 ,
+ *     pageSize:20,
+ *     sortField: 'publishTime' | 'orderNum' | 'evaluateNum'
+ * }
+ * @returns
+ */
+export const getSubCategoryAPI = (data) => {
+  return request.post('/category/goods/temporary', data)
+}
