@@ -8,7 +8,10 @@ export const useUserStore = defineStore('user',()=>{
     const res = await loginAPI(data)
     userInfo.value = res.result
   }
-  return {userInfo, loginAction}
+  const clearUser  = () => {
+    userInfo.value = {}
+  }
+  return {userInfo, loginAction, clearUser}
 },{
   persist:{
     enabled: true,
