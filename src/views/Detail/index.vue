@@ -117,9 +117,9 @@ onMounted(() => getGoods())
             <!-- 24热榜+专题推荐 -->
             <div class="goods-aside">
               <!-- 24 -->
-              <detail-hot></detail-hot>
+              <detail-hot :hot-type="1" :title="'24小时热榜'"></detail-hot>
               <!-- 周 -->
-              <detail-hot></detail-hot>
+              <detail-hot :hot-type="2" :title="'周热榜'"></detail-hot>
             </div>
           </div>
         </div>
