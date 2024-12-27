@@ -1,5 +1,8 @@
 <script setup>
+import { loginAPI } from '@/apis/login'
+import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const formData = ref({
  account: '',
@@ -28,7 +31,15 @@ const rules = {
 const formRef = ref(null)
 const doLogin = async ()=>{
   await formRef.value.validate()
+  const res = await loginAPI(formData.value)
+  ElMessage.success('登陆成功!')
+  router.replace({path: '/'})
+
+
 }
+
+
+
 </script>
 
 
