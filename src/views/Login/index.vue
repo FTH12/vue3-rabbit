@@ -1,13 +1,12 @@
 <script setup>
-import { loginAPI } from '@/apis/login'
 import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-
+import { useUserStore } from '@/stores/user'
 const formData = ref({
- account: '',
- password: '',
- agree: false
+ account: 'xiaotuxian001',
+ password: '123456',
+ agree: true
 })
 const rules = {
   account: [
@@ -28,10 +27,12 @@ const rules = {
   ]
 }
 
+const router = useRouter()
 const formRef = ref(null)
+const useUser = useUserStore()
 const doLogin = async ()=>{
   await formRef.value.validate()
-  const res = await loginAPI(formData.value)
+  await useUser.loginAction(formData.value)
   ElMessage.success('登陆成功!')
   router.replace({path: '/'})
 
