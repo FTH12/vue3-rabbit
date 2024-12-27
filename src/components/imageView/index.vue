@@ -22,7 +22,6 @@ const { elementX, elementY, isOutside} = useMouseInElement(target)
 const left = ref(0)
 const top = ref(0)
 watch([elementX, elementY], ()=>{
-  console.log('x,y变化了')
   if (elementX.value >= 100 && elementX.value <= 300){
     left.value = elementX.value-100
   }
@@ -62,11 +61,11 @@ watch([elementX, elementY], ()=>{
     <!-- 放大镜大图 -->
     <div class="large" :style="[
       {
-        backgroundImage: `url(${imageList[0]})`,
-        backgroundPositionX: `0px`,
-        backgroundPositionY: `0px`,
+        backgroundImage: `url(${imageList[acitveIndex]})`,
+        backgroundPositionX: `${ -2 * left }px`,
+        backgroundPositionY: `${ -2 * top }px`,
       },
-    ]" v-show="false"></div>
+    ]" v-show="!isOutside"></div>
   </div>
 </template>
 
