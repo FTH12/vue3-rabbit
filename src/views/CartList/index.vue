@@ -9,7 +9,14 @@ const selectedChange = (selected, skuId)=>{
 
 const allChange = (selected)=>{
   cartStore.changeAll(selected)
+}
 
+const countChange = (count,skuId) => {
+  cartStore.updateCartCount(count, skuId)
+}
+
+const delCart = (goods)=> {
+  cartStore.delCart(goods.skuId)
 }
 </script>
 
@@ -38,7 +45,7 @@ const allChange = (selected)=>{
               </td>
               <td>
                 <div class="goods">
-                  <RouterLink to="/"><img :src="i.pictures" alt="" /></RouterLink>
+                  <RouterLink to="/"><img :src="i.picture" alt="" /></RouterLink>
                   <div>
                     <p class="name ellipsis">
                       {{ i.name }}
@@ -50,7 +57,7 @@ const allChange = (selected)=>{
                 <p>&yen;{{ i.price }}</p>
               </td>
               <td class="tc">
-                <el-input-number v-model="i.count" />
+                <el-input-number :model-value="i.count" :min="1" @change="(count)=>{countChange(count, i.skuId)}" />
               </td>
               <td class="tc">
                 <p class="f16 red">&yen;{{ (i.price * i.count).toFixed(2) }}</p>
