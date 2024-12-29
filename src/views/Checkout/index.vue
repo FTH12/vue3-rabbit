@@ -1,7 +1,9 @@
 <script setup>
-import { addAddressAPI, getCheckoutAPI } from '@/apis/checkout'
+import { addAddressAPI, getCheckoutAPI, submitOrderAPI } from '@/apis/checkout'
+import { useCartStore } from '@/stores/cart'
 import { ElMessage } from 'element-plus'
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 // import
 const checkInfo = ref({})  // 订单对象
 const curAddress = ref({})  // 地址对象
@@ -56,13 +58,34 @@ const cancelAdd = () => {
   }
 
 }
-const confirAdd = async ()=>{
+const confirAdd = async () => {
   await addAddressAPI(newAddress.value)
   ElMessage.success('添加地址成功')
   addFlag.value = false
   const res = await getAddressAPI()
   checkInfo.value.userAddresses = res.result
 
+}
+
+const cartStore = useCartStore()
+const router = useRouter()
+const submitOrder = async () => {
+  const res = await submitOrderAPI({
+    deliveryTimeType: 1,
+    payType: 1,
+    payChannel: 1,
+    buyerMessage: '',
+    goods: checkInfo.value.goods.map(item => {
+      return {
+        skuId: item.skuId,
+        count: item.count
+      }
+    }),
+    addressId: curAddress.value.id
+  })
+  const orderId = res.result.id
+  router.push(`/pay/${orderId}`)
+  cartStore.getCart()
 }
 </script>
 
@@ -158,7 +181,7 @@ const confirAdd = async ()=>{
         </div>
         <!-- 提交订单 -->
         <div class="submit">
-          <el-button type="primary" size="large">提交订单</el-button>
+          <el-button type="primary" size="large" @click="submitOrder">提交订单</el-button>
         </div>
       </div>
     </div>

@@ -12,3 +12,11 @@ export const addAddressAPI = (data) => {
 export const getAddressAPI = ()=>{
   return request.get('/member/address')
 }
+
+export const submitOrderAPI = (data)=>{
+  return request.post('/member/order', data)
+}
+
+export const getOrderAPI = (id)=>{
+  return request.get(`/member/order/${id}`)
+}
