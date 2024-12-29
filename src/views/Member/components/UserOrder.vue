@@ -1,4 +1,6 @@
 <script setup>
+import { getOrdersAPI } from '@/apis/checkout'
+import { ref, onMounted } from 'vue'
 // tab列表
 const tabTypes = [
   { name: "all", label: "全部订单" },
@@ -10,8 +12,17 @@ const tabTypes = [
   { name: "cancel", label: "已取消" }
 ]
 // 订单列表
-const orderList = []
-
+const orderList = ref([])
+const params = {
+  orderState: 0,
+  page: 1,
+  pageSize: 2
+}
+const getOrderList = async ()=>{
+  const res = await getOrdersAPI(params)
+  orderList.value = res.result
+}
+onMounted(() => getOrderList() )
 </script>
 
 <template>
@@ -26,7 +37,7 @@ const orderList = []
         </div>
         <div v-else>
           <!-- 订单列表 -->
-          <div class="order-item" v-for="order in orderList" :key="order.id">
+          <div class="order-item" v-for="order in orderList.items" :key="order.id">
             <div class="head">
               <span>下单时间：{{ order.createTime }}</span>
               <span>订单编号：{{ order.id }}</span>

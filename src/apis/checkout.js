@@ -20,3 +20,19 @@ export const submitOrderAPI = (data)=>{
 export const getOrderAPI = (id)=>{
   return request.get(`/member/order/${id}`)
 }
+
+/**
+ *
+ * @param {*} params :{
+ *  orderState: 0,
+ *  page:1,
+ *  pageSize: 2
+ * }
+ * @returns
+ */
+
+export const getOrdersAPI = (params)=>{
+  return request.get('/member/order', {
+    params
+  })
+}

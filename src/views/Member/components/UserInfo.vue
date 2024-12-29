@@ -12,6 +12,8 @@ const getLikeList = async () =>{
   likeList.value = res.result
 }
 onMounted( ()=> getLikeList())
+
+
 </script>
 
 <template>
