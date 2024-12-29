@@ -11,6 +11,15 @@ const tabTypes = [
   { name: "complete", label: "已完成" },
   { name: "cancel", label: "已取消" }
 ]
+
+const stateMap = {
+  1: '待付款',
+  2: '待发货',
+  3: '待收货',
+  4: '待评价',
+  5: '已完成',
+  6: '已取消'
+}
 // 订单列表
 const orderList = ref([])
 const params = {
@@ -18,13 +27,13 @@ const params = {
   page: 1,
   pageSize: 2
 }
-const getOrderList = async ()=>{
+const getOrderList = async () => {
   const res = await getOrdersAPI(params)
   orderList.value = res.result
 }
-onMounted(() => getOrderList() )
+onMounted(() => getOrderList())
 
-const tabChange = (type)=>{
+const tabChange = (type) => {
   params.orderState = type
   getOrderList()
 }
@@ -35,6 +44,8 @@ const pageChange = (curPage) => {
   params.page = curPage
   getOrderList()
 }
+
+
 </script>
 
 <template>
@@ -56,7 +67,7 @@ const pageChange = (curPage) => {
               <!-- 未付款，倒计时时间还有 -->
               <span class="down-time" v-if="order.orderState === 1">
                 <i class="iconfont icon-down-time"></i>
-                <b>付款截止: {{order.countdown}}</b>
+                <b>付款截止: {{ order.countdown }}</b>
               </span>
             </div>
             <div class="body">
@@ -80,7 +91,7 @@ const pageChange = (curPage) => {
                 </ul>
               </div>
               <div class="column state">
-                <p>{{ order.orderState }}</p>
+                <p>{{ stateMap[order.orderState] }}</p>
                 <p v-if="order.orderState === 3">
                   <a href="javascript:;" class="green">查看物流</a>
                 </p>
@@ -97,8 +108,7 @@ const pageChange = (curPage) => {
                 <p>在线支付</p>
               </div>
               <div class="column action">
-                <el-button  v-if="order.orderState === 1" type="primary"
-                  size="small">
+                <el-button v-if="order.orderState === 1" type="primary" size="small">
                   立即付款
                 </el-button>
                 <el-button v-if="order.orderState === 3" type="primary" size="small">
@@ -117,7 +127,8 @@ const pageChange = (curPage) => {
           </div>
           <!-- 分页 -->
           <div class="pagination-container">
-            <el-pagination @current-change="pageChange" :total="orderList.counts" :page-size="2" background layout="prev, pager, next" />
+            <el-pagination @current-change="pageChange" :total="orderList.counts" :page-size="2" background
+              layout="prev, pager, next" />
           </div>
         </div>
       </div>
