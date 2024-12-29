@@ -1,14 +1,16 @@
 <script setup>
-import { getCheckoutAPI } from '@/apis/checkout'
+import { addAddressAPI, getCheckoutAPI } from '@/apis/checkout'
+import { ElMessage } from 'element-plus'
 import { onMounted, ref } from 'vue'
+// import
 const checkInfo = ref({})  // 订单对象
 const curAddress = ref({})  // 地址对象
-const getCheckout = async ()=>{
+const getCheckout = async () => {
   const res = await getCheckoutAPI()
   checkInfo.value = res.result
-  curAddress.value = checkInfo.value.userAddresses.find((item)=> item.isDefault ===0)
+  curAddress.value = checkInfo.value.userAddresses.find((item) => item.isDefault === 0)
 }
-onMounted(()=> getCheckout())
+onMounted(() => getCheckout())
 
 // 切换地址
 const toggleFlag = ref(false)
@@ -18,11 +20,49 @@ const selectAddress = (index) => {
   nowIndex.value = index
 }
 const confirmAddress = () => {
-  if(nowIndex.value>-1) {
-    curAddress.value = checkInfo.value.userAddresses[ nowIndex.value ]
+  if (nowIndex.value > -1) {
+    curAddress.value = checkInfo.value.userAddresses[nowIndex.value]
     toggleFlag.value = false
     selectedIndex.value = nowIndex.value
   }
+}
+
+// 添加地址
+const addFlag = ref(false)
+const newAddress = ref({
+  receiver: '',
+  contact: '',
+  provinceCode: '210000',
+  cityCode: '210202',
+  countyCode: '210202',
+  address: '',
+  postalCode: '',
+  addressTags: '别删',
+  isDefault: "1",
+  fullLocation: '辽宁省 大连市 中山区'
+})
+const cancelAdd = () => {
+  newAddress.value = {
+    receiver: '',
+    contact: '',
+    provinceCode: '210000',
+    cityCode: '210202',
+    countyCode: '210202',
+    address: '',
+    postalCode: '',
+    addressTags: '别删',
+    isDefault: "1",
+    fullLocation: '辽宁省 大连市 中山区'
+  }
+
+}
+const confirAdd = async ()=>{
+  await addAddressAPI(newAddress.value)
+  ElMessage.success('添加地址成功')
+  addFlag.value = false
+  const res = await getAddressAPI()
+  checkInfo.value.userAddresses = res.result
+
 }
 </script>
 
@@ -118,31 +158,66 @@ const confirmAddress = () => {
         </div>
         <!-- 提交订单 -->
         <div class="submit">
-          <el-button type="primary" size="large" >提交订单</el-button>
+          <el-button type="primary" size="large">提交订单</el-button>
         </div>
       </div>
     </div>
   </div>
   <!-- 切换地址 -->
-  <el-dialog title="切换收货地址" width="30%" center v-model="toggleFlag" @close="nowIndex = -1" @open="nowIndex=selectedIndex">
-  <div class="addressWrapper">
-    <div class="text item" v-for="(item, index) in checkInfo.userAddresses" @click="selectAddress(index)" :key="item.id" :class="{active : index === nowIndex}" >
-      <ul >
-      <li><span>收<i />货<i />人：</span>{{ item.receiver }} </li>
-      <li><span>联系方式：</span>{{ item.contact }}</li>
-      <li><span>收货地址：</span>{{ item.fullLocation + item.address }}</li>
-      </ul>
+  <el-dialog title="切换收货地址" width="30%" center v-model="toggleFlag" @close="nowIndex = -1"
+    @open="nowIndex = selectedIndex">
+    <div class="addressWrapper">
+      <div class="text item" v-for="(item, index) in checkInfo.userAddresses" @click="selectAddress(index)"
+        :key="item.id" :class="{ active: index === nowIndex }">
+        <ul>
+          <li><span>收<i />货<i />人：</span>{{ item.receiver }} </li>
+          <li><span>联系方式：</span>{{ item.contact }}</li>
+          <li><span>收货地址：</span>{{ item.fullLocation + item.address }}</li>
+        </ul>
+      </div>
     </div>
-  </div>
-  <template #footer>
-    <span class="dialog-footer">
-      <el-button @click="toggleFlag = false">取消</el-button>
-      <el-button @click="confirmAddress" type="primary" >确定</el-button>
-    </span>
-  </template>
-</el-dialog>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="toggleFlag = false">取消</el-button>
+        <el-button @click="confirmAddress" type="primary">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
   <!-- 添加地址 -->
-
+  <el-dialog title="新增收货地址" width="25%" center v-model="addFlag" @close="cancelAdd">
+    <el-form :model="newAddress" label-width="auto" label-position="right"
+      style="max-width: 400px; margin: 0 auto; margin-top: 20px;">
+      <el-form-item label="收货人" prop="recevier">
+        <el-input v-model="newAddress.receiver"></el-input>
+      </el-form-item>
+      <el-form-item label="手机号" prop="contact">
+        <el-input v-model="newAddress.contact"></el-input>
+      </el-form-item>
+      <!-- <el-form-item label="地区" >
+        <el-select style="width: 150px;">
+          <el-option></el-option>
+        </el-select>
+      </el-form-item> -->
+      <el-form-item label="详细地址" prop="address">
+        <el-input v-model="newAddress.address"></el-input>
+      </el-form-item>
+      <el-form-item label="邮政编码" prop="postalCode">
+        <el-input v-model="newAddress.postalCode"></el-input>
+      </el-form-item>
+      <el-form-item label="是否默认" prop="isDefault">
+        <el-select v-model="newAddress.isDefault" style="width: 150px;">
+          <el-option label="是" value="0" />
+          <el-option label="否" value="1" />
+        </el-select>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="addFlag = false">取消</el-button>
+        <el-button @click="confirAdd" type="primary">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <style scoped lang="scss">
