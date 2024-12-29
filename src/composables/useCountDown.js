@@ -12,13 +12,14 @@ export const useCountDown = ()=>{
     formatTime.value = `${minute}分${second}秒`
     // 开始倒计时逻辑
     timer = setInterval(() => {
-      currentTime--
+      --currentTime < 0 ? 0 : currentTime
       const minute = parseInt(currentTime/60)
       const second = currentTime % 60
       formatTime.value = `${minute < 10 ? '0' : ''}${minute}分${second < 10 ? '0' : ''}${second}秒`
       // 清除倒计时
       if(currentTime<1){
         clearInterval(timer)
+        formatTime.value = '00分00秒'
       }
     }, 1000)
   }
